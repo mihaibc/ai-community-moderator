@@ -1,0 +1,15 @@
+# See https://git-scm.com/docs/gitattributes for more about git attribute files.
+
+# Normalize line endings
+* text=auto
+
+# Mark the database schema as having been generated (API app path).
+api/db/schema.rb linguist-generated
+
+# Mark any vendored files as having been vendored.
+vendor/* linguist-vendored
+api/vendor/* linguist-vendored
+
+# Rails encrypted credentials (API app path)
+api/config/credentials/*.yml.enc diff=rails_credentials
+api/config/credentials.yml.enc diff=rails_credentials

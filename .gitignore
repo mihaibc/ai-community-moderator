@@ -1,0 +1,46 @@
+# Ignore bundler config.
+# Ignore all logfiles and tempfiles.
+api/log/*
+api/tmp/*
+!api/log/.keep
+!api/tmp/.keep
+
+# Ignore pidfiles, but keep the directory.
+api/tmp/pids/*
+!api/tmp/pids/
+!api/tmp/pids/.keep
+
+# Ignore storage (uploaded files in development and any SQLite databases).
+api/storage/*
+!api/storage/.keep
+api/tmp/storage/*
+!api/tmp/storage/
+!api/tmp/storage/.keep
+
+# Ignore key files for decrypting credentials and more.
+api/config/*.key
+
+
+web/logs
+web/*.log
+web/npm-debug.log*
+web/yarn-debug.log*
+web/yarn-error.log*
+web/pnpm-debug.log*
+web/lerna-debug.log*
+
+web/node_modules
+web/dist
+web/dist-ssr
+web/*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
