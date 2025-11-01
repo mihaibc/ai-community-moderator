@@ -1,0 +1,80 @@
+name: API CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test:
+    name: Ruby | RSpec
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: api_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=5
+    defaults:
+      run:
+        working-directory: api
+    env:
+      RAILS_ENV: test
+      DATABASE_TEST_URL: postgres://postgres:postgres@localhost:5432/api_test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          bundler-cache: true
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libpq-dev
+
+      - name: Prepare database
+        run: |
+          bin/rails db:create
+          bin/rails db:migrate
+
+      - name: Run RSpec
+        run: |
+          bin/rspec --format documentation
+
+  lint_and_security:
+    name: Ruby | Lint & Security
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          bundler-cache: true
+
+      - name: RuboCop
+        run: bin/rubocop -f github
+
+      - name: Brakeman
+        run: bin/brakeman --no-pager
+
+      - name: Bundler Audit
+        run: bin/bundler-audit --update
+
